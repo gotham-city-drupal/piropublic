@@ -1,0 +1,115 @@
+<?php
+
+/**
+ * Implementation of hook_fieldgroup_default_groups().
+ */
+function piropublic_frontpage_fieldgroup_default_groups() {
+  $groups = array();
+
+  // Exported group: group_frontpage_banner_lnkgrp
+  $groups['frontpage_banner-group_frontpage_banner_lnkgrp'] = array(
+    'group_type' => 'standard',
+    'type_name' => 'frontpage_banner',
+    'group_name' => 'group_frontpage_banner_lnkgrp',
+    'label' => 'Link Settings',
+    'settings' => array(
+      'form' => array(
+        'style' => 'fieldset_collapsible',
+        'description' => '',
+      ),
+      'display' => array(
+        'weight' => '-1',
+        'label' => 'hidden',
+        'teaser' => array(
+          'format' => 'hidden',
+          'exclude' => 0,
+        ),
+        'full' => array(
+          'format' => 'hidden',
+          'exclude' => 0,
+        ),
+        'description' => '',
+        '4' => array(
+          'format' => 'fieldset',
+          'exclude' => 0,
+        ),
+        '2' => array(
+          'format' => 'fieldset',
+          'exclude' => 0,
+        ),
+        '3' => array(
+          'format' => 'fieldset',
+          'exclude' => 0,
+        ),
+        'token' => array(
+          'format' => 'fieldset',
+          'exclude' => 0,
+        ),
+      ),
+    ),
+    'weight' => '-1',
+    'fields' => array(
+      '0' => 'field_frontpage_banner_link',
+      '1' => 'field_frontpage_banner_img',
+      '2' => 'field_frontpage_banner_imgsrc',
+      '3' => 'field_frontpage_banner_btntxt',
+    ),
+  );
+
+  // Exported group: group_frontpage_banner_vidgrp
+  $groups['frontpage_banner-group_frontpage_banner_vidgrp'] = array(
+    'group_type' => 'standard',
+    'type_name' => 'frontpage_banner',
+    'group_name' => 'group_frontpage_banner_vidgrp',
+    'label' => 'Video Settings',
+    'settings' => array(
+      'form' => array(
+        'style' => 'fieldset_collapsible',
+        'description' => '',
+      ),
+      'display' => array(
+        'weight' => '-2',
+        'label' => 'hidden',
+        'teaser' => array(
+          'format' => 'hidden',
+          'exclude' => 0,
+        ),
+        'full' => array(
+          'format' => 'hidden',
+          'exclude' => 0,
+        ),
+        'description' => '',
+        '4' => array(
+          'format' => 'fieldset',
+          'exclude' => 0,
+        ),
+        '2' => array(
+          'format' => 'fieldset',
+          'exclude' => 0,
+        ),
+        '3' => array(
+          'format' => 'fieldset',
+          'exclude' => 0,
+        ),
+        'token' => array(
+          'format' => 'fieldset',
+          'exclude' => 0,
+        ),
+      ),
+    ),
+    'weight' => '-2',
+    'fields' => array(
+      '0' => 'field_frontpage_banner_videotype',
+      '1' => 'field_frontpage_banner_youtube',
+      '2' => 'field_frontpage_banner_embed',
+      '3' => 'field_frontpage_banner_vidsrc',
+    ),
+  );
+
+  // Translatables
+  // Included for use with string extractors like potx.
+  t('Link Settings');
+  t('Video Settings');
+
+  return $groups;
+}

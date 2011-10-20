@@ -1,0 +1,153 @@
+<?php
+
+include_once('piropublic_frontpage.features.inc');
+
+
+/**
+ * Implementation of hook_perm()
+ */
+
+function piropublic_frontpage_perm() {
+  return array('manage frontpage_banner cycle order');
+}
+
+/**
+ * Implementation of hook_init()
+ */
+function piropublic_frontpage_init() {
+  if (file_exists(drupal_get_path('module', 'piropublic_frontpage') . '/theme/css/' . variable_get('theme_default', 'garland'). '.css')) {
+    drupal_add_css(drupal_get_path('module', 'piropublic_frontpage') . '/theme/css/' . variable_get('theme_default', 'garland'). '.css');
+  }
+}
+
+/**
+* Implements hook_theme().
+*/
+function piropublic_frontpage_theme() {
+  return array(
+    // need to use custom template to fix link module target=blank fail
+  	'views_view_fields__frontpage_banner' => array(
+      'template' => 'views-view-fields--frontpage-banner',
+      'original hook' => 'views_view_fields',
+      'path' => drupal_get_path('module', 'piropublic_frontpage') . '/theme/templates/',
+   	  'preprocess functions' => array(
+      	'template_preprocess',
+      	'template_preprocess_views_view_fields',
+        'piropublic_frontpage_preprocess_views_view_fields__frontpage_banner',
+      ),
+      'arguments' => array('view' => NULL, 'options' => NULL, 'row' => NULL),
+    ),
+  	'views_view__frontpage_media__block_1' => array(
+      'template' => 'views-view--frontpage-media--block-1',
+      'original hook' => 'views_view',
+      'path' => drupal_get_path('module', 'piropublic_frontpage') . '/theme/templates/',
+   	  'preprocess functions' => array(
+      	'template_preprocess',
+      	'template_preprocess_views_view',
+        'piropublic_frontpage_preprocess_views_view__frontpage_media__block_1',
+      ),
+      'arguments' => array('view' => NULL),
+    ),
+  	'views_view__frontpage_media__block_2' => array(
+      'template' => 'views-view--frontpage-media--block-2',
+      'original hook' => 'views_view',
+      'path' => drupal_get_path('module', 'piropublic_frontpage') . '/theme/templates/',
+   	  'preprocess functions' => array(
+      	'template_preprocess',
+      	'template_preprocess_views_view',
+        'piropublic_frontpage_preprocess_views_view__frontpage_media__block_2',
+      ),
+      'arguments' => array('view' => NULL),
+    ),
+  	'views_view__frontpage_media__block_3' => array(
+      'template' => 'views-view--frontpage-media--block-3',
+      'original hook' => 'views_view',
+      'path' => drupal_get_path('module', 'piropublic_frontpage') . '/theme/templates/',
+   	  'preprocess functions' => array(
+      	'template_preprocess',
+      	'template_preprocess_views_view',
+        'piropublic_frontpage_preprocess_views_view__frontpage_media__block_3',
+       ),
+        'arguments' => array('view' => NULL),
+    ),
+  );
+}
+
+/**
+* Implements hook_preprocess()
+*/
+function piropublic_frontpage_preprocess_views_view__frontpage_media__block_1(&$variables) {
+  if (user_access('create media content')) {
+    $variables['helper_links'] = l(t('add other media'), 'node/add/media');
+  }
+}
+
+
+/**
+ * Implements hook_preprocess()
+ */
+function piropublic_frontpage_preprocess_views_view__frontpage_media__block_2(&$variables) {
+  if (user_access('create media content')) {
+    $variables['helper_links'] = l(t('add another article'), 'node/add/media');
+  }
+}
+
+/**
+* Implements hook_preprocess()
+*/
+function piropublic_frontpage_preprocess_views_view__frontpage_media__block_3(&$variables) {
+  if (user_access('create media content')) {
+    $variables['helper_links'] = l(t('add another coalition letter'), 'node/add/media');
+  }
+}
+
+/**
+ * Implements hook_preprocess()
+ */
+function piropublic_frontpage_preprocess_views_view_fields__frontpage_banner(&$variables) {
+  // need to use custom template to fix link module target=blank fail
+  if (!user_access('create frontpage_banner content')) {
+    unset($variables['fields']['nothing']);
+  }
+
+  if (user_access('manage frontpage_banner cycle order')) {
+    $cycle_order = l(t('manage cycle order'), '/admin/content/nodequeue/' .$variables['fields']['sqid']->raw. '/view');
+  }
+
+  $variables['admin_links'] = $variables['fields']['nothing']->content . $variables['fields']['edit_node']->content . $variables['fields']['delete_node']->content . $cycle_order . $variables['fields']['nodequeue_links']->content;
+  $variables['sharethis'] = $variables['fields']['sharethislink']->content;
+  
+  if ($variables['fields']['field_frontpage_banner_type_value']->raw == 'video') {
+    $variables['video'] = TRUE;
+  }
+  if (isset($variables['video'])) {
+    drupal_add_js(drupal_get_path('module', 'piropublic_frontpage') . '/theme/js/watch-button.js');
+    $variables['video'] = $variables['fields']['field_frontpage_banner_videotype_value']->raw;
+    $appender = 'node_data_field_frontpage_banner_img_field_frontpage_banner_' .$variables['video']. '_value';
+    $variables['button'] = l(t("!text", array('!text' => 'CLICK <em>the</em> VIDEO')), '/emvideo/modal/' .$variables['row']->nid. '/610/350/field_frontpage_banner_' .$variables['video']. '/' .$variables['video']. '/' . $variables['row']->$appender, array('attributes' => array('class' => 'emvideo-watch-button'), 'html' => 'true'));
+
+    $variables['media'] = $variables['fields']['field_frontpage_banner_' .$variables['video']. '_embed']->content;
+    $variables['source'] = $variables['fields']['field_frontpage_banner_' .$variables['video']. '_provider']->content;
+
+    if ($variables['video'] == 'other') {
+      // need better solution for next line;
+      $variables['media'] = t("!embed", array('!embed' => $variables['fields']['field_frontpage_banner_embed_value']->raw));
+      $variables['source'] = $variables['fields']['field_frontpage_banner_vidsrc_value']->content;
+      $variables['button'] = t("!text", array('!text' => 'CLICK <em>the</em> VIDEO'));
+      $variables['attr']['classes'] = 'embed-other-wrapper';
+    }
+  }
+  else {
+    $variables['media'] = $variables['fields']['field_frontpage_banner_img_fid']->content;
+    $variables['source'] = $variables['fields']['field_frontpage_banner_imgsrc_value']->content;
+
+    $variables['fields']['title']->attributes = unserialize($variables['row']->node_data_field_frontpage_banner_img_field_frontpage_banner_link_attributes);
+    $variables['fields']['title']->attributes['target'] ?
+      $variables['fields']['title']->attributes['target'] : $variables['fields']['title']->attributes['target'] = '_self';
+    $variables['fields']['title']->content = l($variables['fields']['title']->content, $variables['fields']['field_frontpage_banner_link_url']->content, array('attributes' => array('target' => $variables['fields']['title']->attributes['target']), 'html' => 'true'));
+
+     $variables['fields']['field_frontpage_banner_btntxt_value']->content ?
+      $variables['button'] = $variables['fields']['field_frontpage_banner_btntxt_value']->content : $variables['button'] = t("READ MORE");
+    $variables['button'] =  l($variables['button'], $variables['fields']['field_frontpage_banner_link_url']->content, array('attributes' => array('target' => $variables['fields']['title']->attributes['target']), 'html' => 'true'));
+  }
+}

@@ -1,0 +1,151 @@
+@CHARSET "UTF-8";
+
+body {
+  margin: 0;
+  padding: 0;
+}
+
+a {
+  color: #A33131;
+}
+
+td.permission {
+  font-family: "Helvetica Neue",Helvetica,Arial,Geneva,sans-serif;
+  font-size: 11px;
+  font-weight: normal;
+  color: #333333;
+  padding: 20px 0 10px 0;
+}
+
+td.permission a {
+  font-family: "Helvetica Neue",Helvetica,Arial,Geneva,sans-serif;
+  font-size: 11px;
+  font-weight: normal;
+  color: #000000;
+}
+
+td.header {
+  height: 75px;
+  border-top: 1px dotted #d5d5d5;
+  border-bottom: 1px dotted #d5d5d5;
+}
+
+td.header h1 {
+  font-family: Georgia,"Times New Roman",Times,serif;
+  font-size: 44px;
+  font-weight: bold;
+  color: #A33131;
+  display: inline;
+}
+
+table.sidebar td {
+  border-bottom: 1px dotted #d5d5d5;
+  padding: 20px 0 20px 0;
+}
+
+h4.meta {
+  font-family: Georgia,"Times New Roman",Times,serif;
+  font-size: 12px;
+  font-weight: normal;
+  color: #A33131;
+  margin: 0;
+  padding: 0;
+  text-transform: uppercase;
+}
+
+table.sidebar ul {
+  margin: 0 0 0 24px;
+  padding: 0;
+}
+
+table.sidebar ul li a {
+  font-family: Arial;
+  font-size: 12px;
+  font-weight: normal;
+  color: #cc0000;
+}
+
+table.sidebar h3 {
+  font-family: Georgia;
+  font-size: 18px;
+  font-weight: normal;
+  color: #000000;
+  margin: 0 0 10px 0;
+  padding: 0;
+}
+
+table.sidebar p {
+  font-family: "Helvetica Neue",Helvetica,Arial,Geneva,sans-serif;
+  font-size: 12px;
+  font-weight: normal;
+  color: #000000;
+  margin: 0 0 12px 0;
+  padding: 0;
+}
+
+table.sidebar p.miniheader {
+  font-family: "Helvetica Neue",Helvetica,Arial,Geneva,sans-serif;
+  font-size: 12px;
+  font-weight: bold;
+  color: #000000;
+  margin: 0 0 4px 0;
+  padding: 0;
+}
+
+td.mainbar h2 {
+  font-family: Georgia;
+  font-size: 18px;
+  font-weight: normal;
+  color: #A33131;
+  margin: 20px 0 8px 0;
+  padding: 0;
+}
+
+td.mainbar h2 a {
+  font-family: Georgia;
+  font-size: 18px;
+  font-weight: normal;
+  color: #A33131;
+  text-decoration: none;
+}
+
+td.mainbar p {
+  font-family: "Helvetica Neue",Helvetica,Arial,Geneva,sans-serif;
+  font-size: 13px;
+  font-weight: normal;
+  color: #333333;
+  margin: 0 0 20px 0;
+  padding: 0;
+}
+
+td.mainbar p.top {
+  padding: 0 0 6px 0;
+  border-bottom: 1px dotted #d5d5d5;
+}
+
+td.mainbar p.top a {
+  font-family: "Helvetica Neue",Helvetica,Arial,Geneva,sans-serif;
+  font-size: 10px;
+  font-weight: normal;
+  color: #cc0000;
+}
+
+td.mainbar ul {
+  font-family: Georgia;
+  font-size: 13px;
+  font-weight: normal;
+  color: #333333;
+}
+
+td.footer {
+  font-family: "Helvetica Neue",Helvetica,Arial,Geneva,sans-serif;
+  font-size: 11px;
+  font-weight: normal;
+  color: #333333;
+  padding: 10px 0 10px 0;
+  border-top: 1px dotted #d5d5d5;
+}
+
+td.footer span {
+  font-weight: bold;
+}

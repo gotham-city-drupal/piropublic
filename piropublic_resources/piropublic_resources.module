@@ -1,0 +1,97 @@
+<?php
+
+include_once('piropublic_resources.features.inc');
+
+
+/**
+ * Implementation of hook_init()
+ */
+function piropublic_resources_init() {
+  if (file_exists(drupal_get_path('module', 'piropublic_resources') . '/theme/css/' . variable_get('theme_default', 'garland'). '.css')) {
+    drupal_add_css(drupal_get_path('module', 'piropublic_resources') . '/theme/css/' . variable_get('theme_default', 'garland'). '.css');
+  }
+}
+
+/**
+ * Implements hook_theme().
+ */
+
+function piropublic_resources_theme() {
+  return array(
+    'views_view_fields__resources' => array(
+      'template' => 'views-view-fields--resources',
+      'original hook' => 'views_view_fields',
+      'path' => drupal_get_path('module', 'piropublic_resources') . '/theme/templates/',
+   	  'preprocess functions' => array(
+      	'template_preprocess',
+      	'template_preprocess_views_view_fields',
+        'piropublic_resources_preprocess_views_view_fields__resources',
+      ),
+      'arguments' => array('view' => NULL, 'options' => NULL, 'row' => NULL),
+    ),
+    'views_view__resources__page_1' => array(
+      'template' => 'views-view--resources--page-1',
+      'original hook' => 'views_view',
+      'path' => drupal_get_path('module', 'piropublic_resources') . '/theme/templates/',
+   	  'preprocess functions' => array(
+      	'template_preprocess',
+      	'template_preprocess_views_view',
+        'piropublic_resources_preprocess_views_view__resources__page_1',
+      ),
+      'arguments' => array('view' => NULL),
+    ),
+  );
+}
+
+/**
+ * Implements hook_preprocess()
+ */
+function piropublic_resources_preprocess_views_view_fields__resources(&$variables) {
+  // appropriate links based on type of resource and target location, not using checkplain because already html
+  if ($variables['fields']['field_resources_file_fid']->raw) {
+    $variables['fields']['field_resources_image_fid']->content = l($variables['fields']['field_resources_image_fid']->content, $variables['fields']['field_resources_file_fid']->content, array('html' => 'true'));
+    $variables['fields']['title']->content = l($variables['fields']['title']->content, $variables['fields']['field_resources_file_fid']->content, array('html' => 'true'));
+  }
+  else { 
+    $variables['fields']['field_resources_image_fid']->attributes = unserialize($variables['row']->node_data_field_resources_image_field_resources_link_attributes);
+  }
+  if ($variables['fields']['field_resources_image_fid']->attributes['target']) {
+    $variables['fields']['field_resources_image_fid']->content = l($variables['fields']['field_resources_image_fid']->content, $variables['fields']['field_resources_link_url']->content, array('attributes' => array('target' => $variables['fields']['field_resources_image_fid']->attributes['target']), 'html' => 'true'));
+    $variables['fields']['title']->content = l($variables['fields']['title']->content, $variables['fields']['field_resources_link_url']->content, array('attributes' => array('target' => $variables['fields']['field_resources_image_fid']->attributes['target']), 'html' => 'true'));
+  }
+  else {
+    $variables['fields']['field_resources_image_fid']->content = l($variables['fields']['field_resources_image_fid']->content, $variables['fields']['field_resources_link_url']->content, array('attributes' => array('target' => '_self'), 'html' => 'true'));
+    $variables['fields']['title']->content = l($variables['fields']['title']->content, $variables['fields']['field_resources_link_url']->content, array('attributes' => array('target' => '_self'), 'html' => 'true'));
+  }
+
+  $variables['admin_links'] = $variables['fields']['edit_node']->content . $variables['fields']['delete_node']->content;
+}
+
+
+/**
+ * Implements hook_preprocess()
+ */
+function piropublic_resources_preprocess_views_view__resources__page_1(&$variables) {
+  if (user_access('create resources content')) {
+    $variables['helper_links'] = l(t('add another resource'), 'node/add/resources');
+  }
+}
+
+/**
+ * Implements hook_uuid_node_features_export_render_alter()
+ */
+function piropublic_resources_uuid_node_features_export_render_alter(&$export, $node, $module) {
+  // don't allow uuid_features to export node properties that can change on deployment
+  unset($export->changed);
+  unset($export->created);
+  unset($export->revision_uuid);
+  unset($export->last_comment_timestamp);
+  unset($export->revision_timestamp);
+  unset($export->data);
+  unset($export->picture);
+  unset($export->old_status);
+  unset($export->date);
+  unset($export->webform);
+  unset($export->location);
+  unset($export->locations);
+}

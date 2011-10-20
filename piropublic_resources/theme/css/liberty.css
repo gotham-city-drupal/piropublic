@@ -1,0 +1,56 @@
+@CHARSET "ISO-8859-1";
+
+/* RESOURCES */
+.view-resources .admin_links a {
+  padding: 5px;
+  margin:0;
+  font-size: 12px;
+  color: #191999;
+}
+
+.view-resources .views-row {
+ margin-top: 20px; 
+ border-bottom: 1px solid #c1dbf2;
+}
+
+.view-resources.helper_links {
+  margin-bottom: 10px;
+}
+
+.view-resources .helper_links a {
+  margin-right: 10px;
+  color: #191999;
+}
+
+.view-resources .admin_links {
+  font-size: 12px;
+  padding-left: 5px;
+  margin-top: 10px;
+}
+
+.view-resources .views-field-title a {
+  font-size: 20px;
+}
+
+.view-resources .views-field-field-resources-desc-value {
+  font-size: 14px;
+  margin-top: 10px;
+  padding-bottom: 10px;
+}
+
+.view-resources img {
+  float: left;
+  margin-right: 25px;
+  padding-bottom: 20px;
+}
+
+.view-resources .helper_links {
+  border-bottom: 1px solid #c1dbf2;
+  margin-bottom: 20px;
+  font-size: 12px;
+}
+
+.view-resources .views-field-field-resources-image-fid {
+  float: left;
+}
+

@@ -1,0 +1,40 @@
+@CHARSET "ISO-8859-1";
+
+/* PARTNERS */
+.view-partners .admin_links a {
+  padding: 5px;
+  margin:0;
+  font-size: 12px;
+  color: #191999;
+}
+
+
+.view-partners.helper_links {
+  margin-bottom: 10px;
+}
+
+.view-partners .helper_links a {
+  margin-right: 10px;
+  color: #191999;
+}
+
+.view-partners .admin_links {
+  font-size: 12px;
+  padding-left: 5px;
+}
+
+.view-partners .views-field-title a {
+  font-size: 16px;
+}
+
+.view-partners a img {
+  float: left;
+  margin-right: 15px;
+  margin-bottom: 20px;
+}
+
+.view-partners .helper_links {
+  border-bottom: 1px solid #c1dbf2;
+  margin-bottom: 20px;
+  font-size: 12px;
+}

@@ -1,0 +1,46 @@
+<?php
+
+include_once('piropublic.features.inc');
+
+/**
+ * Implementation of hook_init()
+ */
+function piropublic_init() {
+  if (file_exists(drupal_get_path('module', 'piropublic') . '/theme/css/' . variable_get('theme_default', 'garland'). '.css')) {
+    drupal_add_css(drupal_get_path('module', 'piropublic') . '/theme/css/' . variable_get('theme_default', 'garland'). '.css');
+  }
+}
+
+/**
+ * Implementation of hook_FORM_ID_alter()
+ *
+ * removes unused config from site information form.
+ *
+ */
+function piropublic_form_system_site_information_settings_alter(&$form, &$form_state) {
+  if (variable_get('theme_default', 'garland')=='liberty'){
+    unset($form['site_mission']);
+    unset($form['site_footer']);
+    unset($form['site_slogan']);
+  }
+}
+
+/**
+* Implements hook_uuid_node_features_export_render_alter()
+*/
+function piropublic_uuid_node_features_export_render_alter(&$export, $node, $module) {
+  // don't allow uuid_features to export node properties that can change on deployment
+  unset($export->changed);
+  unset($export->created);
+  unset($export->revision_uuid);
+  unset($export->last_comment_timestamp);
+  unset($export->revision_timestamp);
+  unset($export->data);
+  unset($export->picture);
+  unset($export->old_status);
+  unset($export->date);
+  unset($export->webform);
+  unset($export->location);
+  unset($export->locations);
+
+}

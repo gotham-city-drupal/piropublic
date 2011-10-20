@@ -1,0 +1,73 @@
+@CHARSET "ISO-8859-1";
+
+#block-simplenews-52 .form-item label  {
+  display:none;
+}
+
+#block-simplenews-52 .form-item {
+  display: inline;
+}
+
+#block-block-10 {
+  float:left;
+  margin: auto;
+  width: 300px;
+}
+
+#block-block-10 p {
+  margin: 0;
+}
+
+#block-block-10 img {
+  margin-top: -3px;
+}
+
+#block-simplenews-52 {
+  float: right;
+  width: 300px;
+  text-align: right;
+  height: 66px;
+  padding-right:0;
+  margin-top: 2px;
+}
+
+#block-simplenews-52 input.form-text {
+  width: 155px;
+  background: #FFFFFF;
+  color: #999999;
+  padding: 10px;
+}
+
+#block-simplenews-52 input.form-text:focus {
+  color: #666666;
+}
+
+#block-simplenews-52 input.form-submit {
+  background: #A33131;
+  color: #FFFFFF;
+  padding: 10px;
+  margin-right: 8px;
+  margin-top: 13px;
+}
+
+#block-block-8 {
+  background: transparent;
+  float: left;  
+  width: 335px;
+  padding: 5px;
+  padding-right: 0;
+  text-align: right;
+}
+
+#block-block-8 img {
+  padding-left: 40px;
+  margin-top: 3px;
+}
+
+#block-block-8 img.sm-first {
+  padding-left: 0px;
+}
+
+#block-block-8 p {
+  margin: 0;
+}

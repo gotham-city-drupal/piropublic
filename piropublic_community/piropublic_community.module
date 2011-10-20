@@ -1,0 +1,144 @@
+<?php
+
+include_once('piropublic_community.features.inc');
+
+/**
+ * Implementation of hook_init()
+ */
+function piropublic_community_init() {
+ if (file_exists(drupal_get_path('module', 'piropublic_community') . '/theme/css/' . variable_get('theme_default', 'garland'). '.css')) {
+    drupal_add_css(drupal_get_path('module', 'piropublic_community') . '/theme/css/' . variable_get('theme_default', 'garland'). '.css');
+  }
+}
+
+/**
+* Implements hook_theme().
+*/
+function piropublic_community_theme() {
+  return array(
+  // need to use custom template to fix link module target=blank fail
+  	'simplenews_block' => array(
+      'template' => 'simplenews-block--custom',
+      'arguments' => array('tid' => NULL),
+      'pattern' => 'simplenews_block__',
+      'path' => drupal_get_path('module', 'piropublic_community') . '/theme/templates/',
+      'preprocess functions' => array(
+      	'template_preprocess',
+      	'template_preprocess_simplenews_block',
+        'piropublic_community_preprocess_simplenews_block__custom',
+      ),
+    ),
+    'mimemail_message' => array(
+			'template' => 'mimemail-message--custom',
+      'arguments' => array('subject' => NULL, 'body' => NULL, 'mailkey' => NULL, 'recipient' => NULL),
+      'pattern' => 'mimemail_message__',
+      'path' => drupal_get_path('module', 'piropublic_community') . '/theme/templates/',
+      'preprocess functions' => array(
+            	'template_preprocess',
+            	'template_preprocess_mimemail_message',
+              'piropublic_community_preprocess_mimemail_message__custom',
+      ),
+    )
+  );
+}
+
+/**
+* Implements hook_preprocess()
+*/
+function piropublic_community_preprocess_simplenews_block__custom(&$variables) {
+  if (user_access('create simplenews content')) {
+    $variables['helper_links'] = l(t('send a newsletter'), 'node/add/simplenews');
+  }
+  if (user_access('administer simplenews subscriptions')) {
+    $variables['helper_links'] .= l(t('manage newsletters'), 'admin/content/simplenews');
+  }
+}
+
+/**
+* Implements hook_preprocess()
+*/
+function piropublic_community_preprocess_mimemail_message__custom(&$variables) {
+  unset($variables['css']);
+  global $base_url;
+  $variables['headerimg_path'] = $base_url . '/' . drupal_get_path('module', 'piropublic_community') . '/theme/img/header.gif';
+  
+  $sitestyle = variable_get('mimemail_sitestyle', 1);
+  $mailstyle = drupal_get_path('module', 'piropublic_community') . '/theme/css/mail.css';
+
+  $css = @file_get_contents($mailstyle);
+
+  // Regexp to match comment blocks.
+  $comment     = '/\*[^*]*\*+(?:[^/*][^*]*\*+)*/';
+  // Regexp to match double quoted strings.
+  $double_quot = '"[^"\\\\]*(?:\\\\.[^"\\\\]*)*"';
+  // Regexp to match single quoted strings.
+  $single_quot = "'[^'\\\\]*(?:\\\\.[^'\\\\]*)*'";
+
+  // Perform some safe CSS optimizations. (derived from core CSS aggregation)
+  $css = preg_replace_callback(
+    "<$double_quot|$single_quot|$comment>Sus",  // Match all comment blocks along
+    "_mimemail_process_comment",                // with double/single quoted strings
+    $css);                                      // and feed them to _mimemail_process_comment().
+  $css = preg_replace(
+    '<\s*([@{}:;,]|\)\s|\s\()\s*[^\n\S]>S',  // Remove whitespace around separators,
+    '\1',                                    // but keep space around parentheses
+    $css);                                   // and new lines between definitions.
+
+  // End the file with a new line.
+  $css .= "\n";
+
+  // Wordwrap to adhere to RFC821
+  $css = wordwrap($css, 700);
+  $variables['css'] = $css;
+
+   // Process mailkey to be a proper CSS class.
+  $variables['mailkey'] = 'mail-'. str_replace('_', '-', $variables['mailkey']);
+}
+
+
+/**
+ * Implementation of hook_form_alter()
+ *
+ * need to use instead of hook_FORM_ID_alter() because need for other modules to alter first.
+ *
+ */
+function piropublic_community_form_alter(&$form, &$form_state, $form_id) {
+  switch ($form_id) {
+    case 'simplenews_block_form_52':
+      $form['submit']['#value'] = 'Get Updates';
+      unset($form['action']);
+      $form['action']['#type'] = 'value';
+      $form['action']['#value'] = 'subscribe';
+
+      $form['mail']['#default_value'] = 'Email';
+
+      // Add a custom class and placeholder text to the search box.
+      $form['mail']['#attributes'] = array(
+      	'class' => '',
+      	'onblur' => "if (this.value == '') {this.value = '".$form['mail']['#default_value']."'; $(this).removeClass('search-default-font');}",
+      	'onfocus' => "if (this.value == '".$form['mail']['#default_value']."') {this.value = ''; $(this).addClass('search-default-font');}"
+      );
+    break;
+  }
+}
+
+
+/**
+* Implements hook_uuid_node_features_export_render_alter()
+*/
+function piropublic_community_uuid_node_features_export_render_alter(&$export, $node, $module) {
+  // don't allow uuid_features to export node properties that can change on deployment
+  unset($export->changed);
+  unset($export->created);
+  unset($export->revision_uuid);
+  unset($export->last_comment_timestamp);
+  unset($export->revision_timestamp);
+  unset($export->data);
+  unset($export->picture);
+  unset($export->old_status);
+  unset($export->date);
+  unset($export->webform);
+  unset($export->location);
+  unset($export->locations);
+
+}

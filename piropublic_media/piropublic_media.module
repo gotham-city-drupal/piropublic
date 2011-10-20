@@ -1,0 +1,230 @@
+<?php
+
+include_once('piropublic_media.features.inc');
+
+/**
+ * Implementation of hook_init()
+ */
+function piropublic_media_init() {
+  if (file_exists(drupal_get_path('module', 'piropublic_media') . '/theme/css/' . variable_get('theme_default', 'garland'). '.css')) {
+    drupal_add_css(drupal_get_path('module', 'piropublic_media') . '/theme/css/' . variable_get('theme_default', 'garland'). '.css');
+  }
+}
+
+/**
+* Implements hook_theme().
+*/
+function piropublic_media_theme() {
+  return array(
+    'views_view__media__block_1' => array(
+      'template' => 'views-view--media--block-1',
+      'original hook' => 'views_view',
+      'path' => drupal_get_path('module', 'piropublic_media') . '/theme/templates/',
+   	  'preprocess functions' => array(
+      	'template_preprocess',
+      	'template_preprocess_views_view',
+        'piropublic_media_preprocess_views_view__media__block_1',
+      ),
+      'arguments' => array('view' => NULL),
+    ),
+    'views_view__media__block_3' => array(
+      'template' => 'views-view--media--block-3',
+      'original hook' => 'views_view',
+      'path' => drupal_get_path('module', 'piropublic_media') . '/theme/templates/',
+   	  'preprocess functions' => array(
+      	'template_preprocess',
+      	'template_preprocess_views_view',
+        'piropublic_media_preprocess_views_view__media__block_3',
+       ),
+      'arguments' => array('view' => NULL),
+    ),
+  	'views_view__media__block_5' => array(
+      'template' => 'views-view--media--block-5',
+      'original hook' => 'views_view',
+      'path' => drupal_get_path('module', 'piropublic_media') . '/theme/templates/',
+   	  'preprocess functions' => array(
+      	'template_preprocess',
+      	'template_preprocess_views_view',
+        'piropublic_media_preprocess_views_view__media__block_5',
+      ),
+      'arguments' => array('view' => NULL),
+    ),
+  	'views_view__media__block_7' => array(
+      'template' => 'views-view--media--block-7',
+      'original hook' => 'views_view',
+      'path' => drupal_get_path('module', 'piropublic_media') . '/theme/templates/',
+   	  'preprocess functions' => array(
+      	'template_preprocess',
+      	'template_preprocess_views_view',
+        'piropublic_media_preprocess_views_view__media__block_7',
+      ),
+      'arguments' => array('view' => NULL),
+    ),
+  	'views_view_fields__media' => array(
+      'template' => 'views-view-fields--media',
+      'original hook' => 'views_view_fields',
+      'path' => drupal_get_path('module', 'piropublic_media') . '/theme/templates/',
+   	  'preprocess functions' => array(
+      	'template_preprocess',
+      	'template_preprocess_views_view_fields',
+        'piropublic_media_preprocess_views_view_fields__media',
+      ),
+      'arguments' => array('view' => NULL, 'options' => NULL, 'row' => NULL),
+    ),
+    'views_view_grid__media__page_1' => array(
+      'template' => 'views-view-grid--media--page-1',
+      'original hook' => 'views_view_grid',
+      'path' => drupal_get_path('module', 'piropublic_media') . '/theme/templates/',
+      'preprocess functions' => array(
+      	'template_preprocess',
+      	'template_preprocess_views_view_grid',
+        'piropublic_media_preprocess_views_view_grid__media__page_1',
+      ),
+      'arguments' => array('view' => NULL, 'options' => NULL, 'rows' => NULL, 'title' => NULL),
+    ),
+  	'views_view_grid__media__page_4' => array(
+      'template' => 'views-view-grid--media--page-4',
+      'original hook' => 'views_view_grid',
+      'path' => drupal_get_path('module', 'piropublic_media') . '/theme/templates/',
+      'preprocess functions' => array(
+      	'template_preprocess',
+      	'template_preprocess_views_view_grid',
+        'piropublic_media_preprocess_views_view_grid__media__page_4',
+       ),
+      'arguments' => array('view' => NULL, 'options' => NULL, 'rows' => NULL, 'title' => NULL),
+    ),
+  );
+}
+
+/**
+* Implements hook_preprocess()
+*/
+function piropublic_media_preprocess_views_view_grid__media__page_4(&$variables) {
+  if (user_access('create media content')) {
+    $variables['helper_links'] = l(t('add another video'), 'node/add/media');
+  }
+}
+
+/**
+* Implements hook_preprocess()
+*/
+function piropublic_media_preprocess_views_view_grid__media__page_1(&$variables) {
+  if (user_access('create media content')) {
+    $variables['helper_links'] = l(t('add another ' . str_replace('_', ' ', $variables['view']->args[0])), 'node/add/media');
+  }
+}
+
+/**
+* Implements hook_preprocess()
+*/
+function piropublic_media_preprocess_views_view_fields__media(&$variables) {
+  $variables['admin_links'] = $variables['fields']['edit_node']->content . $variables['fields']['delete_node']->content;
+  unset($variables['fields']['edit_node']);
+  unset($variables['fields']['delete_node']);
+  
+  if ($variables['fields']['field_media_embed_value']) {
+    $variables['fields']['field_media_embed_value']->content = t("!embed", array('!embed' => $variables['fields']['field_media_embed_value']->raw));
+  }
+    
+  if ($variables['fields']['field_media_thumb_fid']->raw) {
+    unset($variables['fields']['field_media_youtube_embed']);
+    unset($variables['fields']['field_media_vidthumb_fid']);
+  }
+  elseif ($variables['fields']['field_media_youtube_embed']->raw) {
+    unset($variables['fields']['field_media_vidthumb_fid']);
+    unset($variables['fields']['field_media_thumb_fid']);
+  }
+  elseif ($variables['fields']['field_media_vidthumb_fid']->raw) {
+    unset($variables['fields']['field_media_youtube_embed']);
+    unset($variables['fields']['field_media_thumb_fid']);
+  }
+  else {
+    unset($variables['fields']['field_media_youtube_embed']);
+    unset($variables['fields']['field_media_thumb_fid']);
+  }
+}
+
+
+/**
+ * Implements hook_preprocess()
+ */
+function piropublic_media_preprocess_views_view__media__block_1(&$variables) {
+  if (user_access('create media content')) {
+    $variables['helper_links'] = l(t('add another video'), 'node/add/media');
+  }
+}
+
+/**
+* Implements hook_preprocess()
+*/
+function piropublic_media_preprocess_views_view__media__block_3 (&$variables) {
+  if (user_access('create media content')) {
+    $variables['helper_links'] = l(t('add another post'), 'node/add/media');
+  }
+}
+
+/**
+* Implements hook_preprocess()
+*/
+function piropublic_media_preprocess_views_view__media__block_5 (&$variables) {
+  if (user_access('create media content')) {
+    $variables['helper_links'] = l(t('add another article'), 'node/add/media');
+  }
+}
+
+/**
+* Implements hook_preprocess()
+*/
+function piropublic_media_preprocess_views_view__media__block_7(&$variables) {
+  if (user_access('create media content')) {
+    $variables['helper_links'] = l(t('add other media'), 'node/add/media');
+  }
+}
+
+/**
+* Implementation of hook_nodeapi().
+*/
+function piropublic_media_nodeapi(&$node, $op, $a3 = NULL, $a4 = NULL) {
+  if ($node->type=='frontpage_banner') {
+    switch ($op) {
+      case 'insert':
+        if ($node->field_frontpage_banner_type[0]['value']=='video') {
+          $new_media_node = new StdClass();
+          $new_media_node->type = 'media';
+          $new_media_node->uid = $node->uid;
+          $new_media_node->status = 1;
+          $new_media_node->promote = 1;
+          $new_media_node->title = $node->title;
+          $new_media_node->field_media_type = $node->field_frontpage_banner_type;
+          $new_media_node->field_media_vidtype = $node->field_frontpage_banner_videotype;
+          $new_media_node->field_media_embed = $node->field_frontpage_banner_embed;
+          $new_media_node->field_media_youtube = $node->field_frontpage_banner_youtube;
+          $new_media_node->field_media_vidsource = $node->field_frontpage_banner_vidsrc;
+          $new_media_node->field_media_viddesc = $node->field_frontpage_banner_vidsrc;
+          
+        }
+    
+        node_save($new_media_node);
+      break;
+    }
+  }
+}
+
+/**
+* Implements hook_uuid_node_features_export_render_alter()
+*/
+function piropublic_media_uuid_node_features_export_render_alter(&$export, $node, $module) {
+  // don't allow uuid_features to export node properties that can change on deployment
+  unset($export->changed);
+  unset($export->created);
+  unset($export->revision_uuid);
+  unset($export->last_comment_timestamp);
+  unset($export->revision_timestamp);
+  unset($export->data);
+  unset($export->picture);
+  unset($export->old_status);
+  unset($export->date);
+  unset($export->webform);
+  unset($export->location);
+  unset($export->locations);
+}

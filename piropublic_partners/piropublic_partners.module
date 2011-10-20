@@ -1,0 +1,87 @@
+<?php
+
+include_once('piropublic_partners.features.inc');
+
+/**
+ * Implementation of hook_perm()
+ */
+function piropublic_partners_perm() {
+  return array('manage partners page');
+}
+
+/**
+ * Implementation of hook_init()
+ */
+function piropublic_partners_init() {
+ if (file_exists(drupal_get_path('module', 'piropublic_partners') . '/theme/css/' . variable_get('theme_default', 'garland'). '.css')) {
+    drupal_add_css(drupal_get_path('module', 'piropublic_partners') . '/theme/css/' . variable_get('theme_default', 'garland'). '.css');
+  }
+}
+
+/**
+* Implements hook_theme().
+*/
+
+function piropublic_partners_theme() {
+  return array(
+    'views_view_fields__partners' => array(
+      'template' => 'views-view-fields--partners',
+      'original hook' => 'views_view_fields',
+      'path' => drupal_get_path('module', 'piropublic_partners') . '/theme/templates/',
+   	  'preprocess functions' => array(
+      	'template_preprocess',
+      	'template_preprocess_views_view_fields',
+        'piropublic_partners_preprocess_views_view_fields__partners',
+      ),
+      'arguments' => array('view' => NULL, 'options' => NULL, 'row' => NULL),
+    ),
+    'views_view_grid__partners' => array(
+      'template' => 'views-view-grid--partners',
+      'original hook' => 'views_view_grid',
+      'path' => drupal_get_path('module', 'piropublic_partners') . '/theme/templates/',
+      'preprocess functions' => array(
+      	'template_preprocess',
+      	'template_preprocess_views_view_grid',
+        'piropublic_partners_preprocess_views_view_grid__partners',
+      ),
+      'arguments' => array('view' => NULL, 'options' => NULL, 'rows' => NULL, 'title' => NULL),
+    ),
+  );
+}
+
+
+/**
+ * Implements hook_preprocess()
+ */
+function piropublic_partners_preprocess_views_view_fields__partners(&$variables) {
+  $variables['admin_links'] = $variables['fields']['edit_node']->content . $variables['fields']['delete_node']->content;
+}
+
+
+/**
+ * Implements hook_preprocess()
+ */
+function piropublic_partners_preprocess_views_view_grid__partners(&$variables) {
+  if (user_access('create partner content')) {
+    $variables['helper_links'] = l(t('add another partner'), 'node/add/partner');
+  }
+}
+
+/**
+* Implements hook_uuid_node_features_export_render_alter()
+*/
+function piropublic_partners_uuid_node_features_export_render_alter(&$export, $node, $module) {
+  // don't allow uuid_features to export node properties that can change on deployment
+  unset($export->changed);
+  unset($export->created);
+  unset($export->revision_uuid);
+  unset($export->last_comment_timestamp);
+  unset($export->revision_timestamp);
+  unset($export->data);
+  unset($export->picture);
+  unset($export->old_status);
+  unset($export->date);
+  unset($export->webform);
+  unset($export->location);
+  unset($export->locations);
+}
